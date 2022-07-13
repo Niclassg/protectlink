@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import { trpc } from "../utils/trpc";
+import { isUrl } from "../utils/regexPatterns";
 
 const Home: NextPage = () => {
   const createLink = trpc.useMutation(["links.create"]);
@@ -26,7 +27,7 @@ const Home: NextPage = () => {
   const {
     register,
     handleSubmit,
-    watch,
+    reset,
     formState: { errors },
   } = useForm<Input>();
   const onSubmit: SubmitHandler<Input> = (data) => {
@@ -36,6 +37,7 @@ const Home: NextPage = () => {
         onSuccess: (result) => {
           setShortLink(`${origin}/${result.shortLink.slug}`);
           setToken(result.shortLink.token);
+          reset({ url: "" });
         },
         onError: (error) => {
           console.error("Error", error);
@@ -65,7 +67,7 @@ const Home: NextPage = () => {
               <label className="text-gray-100 font-semibold mb-4">
                 <p className="text-center">Enter a URL to shorten</p>
                 <input
-                  {...register("url", { required: true })}
+                  {...register("url", { required: true, pattern: isUrl })}
                   placeholder="https://example.com"
                   className="border-2 border-gray-900 rounded-lg p-2 text-gray-900 text-center"
                 />
