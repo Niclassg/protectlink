@@ -37,6 +37,7 @@ const Home: NextPage = () => {
         onSuccess: (result) => {
           setShortLink(`${origin}/${result.shortLink.slug}`);
           setToken(result.shortLink.token);
+          copyToClipboard(result.shortLink.token ?? "");
           reset({ url: "" });
         },
         onError: (error) => {
@@ -47,6 +48,11 @@ const Home: NextPage = () => {
         },
       }
     );
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text ?? "");
+    console.log("Copied token to clipboard");
   };
 
   return (
@@ -65,7 +71,7 @@ const Home: NextPage = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col">
               <label className="text-gray-100 font-semibold mb-4">
-                <p className="text-center">Enter a URL to shorten</p>
+                <p className="text-center">Enter a URL to protect</p>
                 <input
                   {...register("url", { required: true, pattern: isUrl })}
                   placeholder="https://example.com"
